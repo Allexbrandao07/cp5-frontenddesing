@@ -1,116 +1,202 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo Tailwind</title>
-  <link href="https://cdn.boxicons.com/3.0.8/fonts/basic/boxicons.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Fio & Prensa — encadernação artesanal e restoration de livros." />
+    <title>Fio &amp; Prensa</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-background: #efe7d6;
+            --color-foreground: #2a241c;
+            --color-primary: #1b4332;
+            --color-secondary: #a9895f;
+            --color-tertiary: #9a3324;
+
+            --font-serif: "Fraunces", serif;
+            --font-sans: "Work Sans", sans-serif;
+        }
+    </style>
 </head>
-<body>
-  
-  <nav>
-    <span>Tailwind Demo</span>
-    <ul>
-      <li><a href="#grid">Grid</a></li>
-      <li><a href="#componentes">Componentes</a></li>
-      <li><a href="#images">Formulário</a></li>
-    </ul>
-  </nav>
-  
-  <div>
-    <header>
-      <h1>Tailwind na prática</h1>
-      <p>
-        Classes utilitárias
-      </p>
+<body class="bg-background text-foreground font-sans antialiased">
+    <header class="border-b border-secondary/50 bg-background">
+        <div class="max-w-7xl px-6 mx-auto flex items-center justify-between gap-4 py-4">
+            <a href="#inicio" class="font-serif text-2xl font-semibold tracking-tight" aria-label="Fio & Prensa, início">
+                Fio <span class="italic text-tertiary">&amp;</span> Prensa
+            </a>
+
+            <nav class="*:px-3 max-md:hidden" aria-label="Navegação principal">
+                <a href="#oficio" class="hover:underline">O ofício</a>
+                <a href="#pecas" class="hover:underline">Peças</a>
+                <a href="#testemunho" class="hover:underline">Depoimentos</a>
+                <a href="#contato" class="hover:underline">Contato</a>
+            </nav>
+
+            <a href="#contato" class="bg-primary text-background font-semibold px-5 py-3 hover:bg-primary/85 transition-colors">
+                Agendar visita
+            </a>
+        </div>
     </header>
-    
-    <!-- ---------------------------
-    GRID LAYOUT
-    Tailwind não tem um "sistema de 12 colunas" próprio como o Bootstrap.
-    Usa-se diretamente Flexbox ou CSS Grid nativo via classes utilitárias:
-    grid, grid-cols-3, gap-4, etc.
-    --------------------------- -->
-    <section id="grid" class="mb-12">
-      <h2 class="text-2xl font-semibold mb-4">Layout com classes utilitárias - Grid</h2>
-      
-      <div class="">
-        <div class="p-4">grid-cols-3</div>
-        <div class="p-4">grid-cols-3</div>
-        <div class="p-4">grid-cols-3</div>
-      </div>
-      
-      <div class="">
-        <div class="p-4">col-span-2</div>
-        <div class="p-4">col-span-1</div>
-      </div>
-    </section>
-    
-    <section id="componentes" class="mb-12">
-      <h2 class="text-2xl font-semibold mb-4">Layout com classes utilitárias - Botões</h2>
-      
-      <div class="">
-        
-        <div class="bg-white p-5">
-          <h3 class="text-lg font-semibold mb-2">Card</h3>
-          <p class="text-gray-600 text-sm mb-4">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, perspiciatis eum.
-          </p>
-          <button class="">
-          Ação
-          </button>
-        </div>
-        
-        <div class="bg-white p-5">
-          <h3 class="text-lg font-semibold mb-2">Card</h3>
-          <p class="text-gray-600 text-sm mb-4">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, perspiciatis eum.
-          </p>
-          <button class="">
-            Outline
-          </button>
-        </div>
-        
-        <div class="bg-white p-5">
-          <h3 class="text-lg font-semibold mb-2">Card</h3>
-          <p class="text-gray-600 text-sm mb-4">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, perspiciatis eum.
-          </p>
-          <button class="">
-          Ação
-          </button>
-        </div>
-      </div>
-    </section>
 
-    <section id="images" class="mb-12">
-      <div class="flex gap-7">
-        <div class="">
-          <img class=""
-          src="https://picsum.photos/500/300" alt="Imagem gerada aleatoriamente">
-        </div>
+    <main>
+        <section id="inicio" class="max-w-7xl px-4 mx-auto flex items-center justify-between max-md:flex-col gap-4 py-20">
+            <div class="md:max-w-md w-full grid gap-4">
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-tertiary">Encadernação artesanal</p>
+                <h1 class="font-serif text-5xl font-semibold leading-tight">
+                    Livros que se seguram nas mãos por gerações.
+                </h1>
+                <p class="text-lg leading-relaxed text-foreground/75">
+                    Costuramos, colamos e prensamos à mão — do caderno de uso diário à restauração de exemplares de família.
+                    Cada peça passa pelas mesmas quatro etapas que aprendemos há trinta anos.
+                </p>
+                <a href="#oficio" class="border border-primary w-fit font-semibold text-primary h-12 px-5 cursor-pointer hover:bg-primary/10 transition-colors mt-4 flex items-center justify-center">
+                    Ver serviços
+                </a>
+            </div>
 
-        <div class="">
-          <img class=""
-          src="https://picsum.photos/500/300" alt="Imagem gerada aleatoriamente">
-        </div>
-      </div>
-    </section>
+            <ul class="md:max-w-md w-full divide-y divide-secondary border-y border-secondary" aria-label="Materiais utilizados">
+                <li class="flex items-center gap-3 py-4">
+                    <span class="bg-tertiary size-8 shrink-0" aria-hidden="true"></span>
+                    <span class="grid gap-0.5">
+                        <strong>Linho belga, cor terracota</strong>
+                        <span class="text-sm opacity-75">Capa dura, acabamento fosco</span>
+                    </span>
+                </li>
+                <li class="flex items-center gap-3 py-4">
+                    <span class="bg-primary size-8 shrink-0" aria-hidden="true"></span>
+                    <span class="grid gap-0.5">
+                        <strong>Percalux verde-musgo</strong>
+                        <span class="text-sm opacity-75">Resistente à umidade</span>
+                    </span>
+                </li>
+                <li class="flex items-center gap-3 py-4">
+                    <span class="bg-secondary size-8 shrink-0" aria-hidden="true"></span>
+                    <span class="grid gap-0.5">
+                        <strong>Papel de guarda marmorizado</strong>
+                        <span class="text-sm opacity-75">Feito à mão, padrão único</span>
+                    </span>
+                </li>
+            </ul>
+        </section>
 
-    <section id="animation" class="mb-12">
-      <div class="flex items-center gap-7">
-        <i class="bx bx-heart"></i>
-        <i class="bx bx-arrow-down-stroke"></i>
-        <i class="bx bx-circle-dashed-half"></i>
-      </div>
-    </section>
-    
-  </div>
-  
-  <footer class="bg-gray-900 text-white text-center py-4">
-    Demo Tailwind CSS
-  </footer>
-  
+        <section id="oficio" class="bg-secondary/10 py-20" aria-labelledby="oficio-title">
+            <div class="max-w-7xl px-4 mx-auto">
+                <div class="max-w-2xl mb-12">
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-tertiary">Nossa prática</p>
+                    <h2 id="oficio-title" class="font-serif text-3xl font-semibold mb-4">O ofício, em quatro etapas</h2>
+                    <p class="my-6 text-foreground/80">
+                        Cada livro passa pela mesma sequência de trabalho, do primeiro caderno de páginas soltas até a prensa final.
+                    </p>
+                </div>
+
+                <ol class="grid grid-cols-4 divide-x divide-secondary max-md:grid-cols-1 max-md:divide-y max-md:divide-x-0" aria-label="Processo de encadernação">
+                    <li class="grid gap-1 max-md:py-4 md:pr-4">
+                        <h3 class="font-serif font-semibold text-2xl text-tertiary/90">01</h3>
+                        <h4 class="font-serif font-semibold text-lg">Dobra</h4>
+                        <p class="text-sm leading-relaxed text-foreground/75">As folhas são dobradas em cadernos e organizadas na ordem de leitura.</p>
+                    </li>
+                    <li class="grid gap-1 max-md:py-4 md:px-4">
+                        <h3 class="font-serif font-semibold text-2xl text-tertiary/90">02</h3>
+                        <h4 class="font-serif font-semibold text-lg">Costura</h4>
+                        <p class="text-sm leading-relaxed text-foreground/75">Os cadernos são costurados manualmente com fio encerado, ponto a ponto.</p>
+                    </li>
+                    <li class="grid gap-1 max-md:py-4 md:px-4">
+                        <h3 class="font-serif font-semibold text-2xl text-tertiary/90">03</h3>
+                        <h4 class="font-serif font-semibold text-lg">Colagem</h4>
+                        <p class="text-sm leading-relaxed text-foreground/75">O lombo recebe cola natural, que dá firmeza sem enxergar o papel.</p>
+                    </li>
+                    <li class="grid gap-1 max-md:py-4 md:pl-4">
+                        <h3 class="font-serif font-semibold text-2xl text-tertiary/90">04</h3>
+                        <h4 class="font-serif font-semibold text-lg">Personagem</h4>
+                        <p class="text-sm leading-relaxed text-foreground/75">O volume descansa na prensa por 24h para fixar a forma definitiva.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="pecas" class="max-w-7xl px-4 mx-auto py-20" aria-labelledby="pecas-title">
+            <div class="mb-10 flex items-end justify-between gap-6 max-md:block">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-tertiary">Nossa oficina</p>
+                    <h2 id="pecas-title" class="font-serif text-3xl font-semibold">Peças recentes</h2>
+                </div>
+                <p class="text-foreground/70 max-md:mt-3">Projetos feitos à mão, um por vez.</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-4 h-156 md:h-96">
+                <figure class="group relative overflow-hidden rounded-sm bg-primary/10 col-span-2 row-span-2">
+                    <img src="Images/6.png" alt="Caderno de campo encadernadinho" class="size-full object-cover transition duration-500 group-hover:scale-105" />
+                    <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/90 to-transparent p-4 pt-12 text-background">
+                        <strong class="block font-serif text-lg">Caderno de campo</strong>
+                        <span class="text-sm opacity-80">Papel vegetal e capa de couro</span>
+                    </figcaption>
+                </figure>
+
+                <figure class="group relative overflow-hidden rounded-sm bg-secondary/20">
+                    <img src="Images/7.png" alt="Restauro de um livro antigo" class="size-full object-cover transition duration-500 group-hover:scale-105" />
+                    <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/90 to-transparent p-4 pt-12 text-background">
+                        <strong class="block font-serif text-lg">Restauro 1968</strong>
+                        <span class="text-sm opacity-80">Conservação e reimpressão</span>
+                    </figcaption>
+                </figure>
+
+                <figure class="group relative overflow-hidden rounded-sm bg-secondary/20">
+                    <img src="Images/8.png" alt="Álbum de casamento encadernadinho" class="size-full object-cover transition duration-500 group-hover:scale-105" />
+                    <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/90 to-transparent p-4 pt-12 text-background">
+                        <strong class="block font-serif text-lg">Álbum de casamento</strong>
+                        <span class="text-sm opacity-80">Edicação artesanal</span>
+                    </figcaption>
+                </figure>
+
+                <figure class="group relative overflow-hidden rounded-sm bg-secondary/20 col-span-2">
+                    <img src="Images/9.png" alt="Edição limitada de livro encadernadinho" class="size-full object-cover transition duration-500 group-hover:scale-105" />
+                    <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/90 to-transparent p-4 pt-12 text-background">
+                        <strong class="block font-serif text-lg">Edição limitada</strong>
+                        <span class="text-sm opacity-80">12 exemplares numerados</span>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <hr class="border-secondary/50" />
+
+        <section id="testemunho" class="max-w-7xl px-6 mx-auto py-16" aria-labelledby="testemunho-title">
+            <figure class="border-l-2 border-tertiary pl-6 grid gap-5">
+                <blockquote id="testemunho-title" class="font-serif italic text-3xl font-medium max-w-xl">
+                    “Levei o diário do meu avô, que estava se desfazendo, e voltou como se tivesse sido feito ontem — mas ainda com a capa original.”
+                </blockquote>
+                <figcaption class="text-sm">
+                    <strong class="font-semibold">Helena Mourão</strong>
+                    <span class="opacity-70">— cliente desde 2019</span>
+                </figcaption>
+            </figure>
+        </section>
+    </main>
+
+    <footer id="contato" class="bg-primary text-background py-20">
+        <div class="max-w-7xl px-4 mx-auto">
+            <h2 class="font-serif text-4xl font-semibold mb-10">Visite o ateliê</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="grid gap-1">
+                    <small class="text-xs capitalize opacity-75">Endereço</small>
+                    <span>Rua dos Encadernadores, 214 - Lapa, São Paulo</span>
+                </div>
+                <div class="grid gap-1">
+                    <small class="text-xs capitalize opacity-75">Horário</small>
+                    <span>Terça a sábado, 10h às 18h</span>
+                </div>
+                <div class="grid gap-1">
+                    <small class="text-xs capitalize opacity-75">Contato</small>
+                    <span>contato@fioprensa.com.br</span>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
