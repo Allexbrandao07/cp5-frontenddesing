@@ -1,0 +1,103 @@
+:root {
+    --primary: #9c6430;
+    --primary-dark: #7a4c22;
+    --primary-soft: #eadfcd;
+    --primary-warm: #c8a473;
+    --gray: #6c757d;
+    --gray-dark: #525a61;
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--primary-dark);
+    --bs-btn-hover-border-color: var(--primary-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--primary-dark);
+    --bs-btn-active-border-color: var(--primary-dark);
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.hero-image-frame {
+    background: linear-gradient(135deg, var(--primary-soft), var(--primary-warm));
+}
+
+.testimonial-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #c79a64, #7a5530);
+}
+
+.object-fit-cover {
+    object-fit: cover;
+}
+
+#carouselDepoimentos .carousel-indicators [data-bs-target] {
+    width: 6px;
+    height: 6px;
+    border: 0;
+    border-radius: 50%;
+    background-color: #adb5bd;
+    opacity: 1;
+}
+
+#carouselDepoimentos .carousel-indicators .active {
+    background-color: var(--primary);
+}
+
+.hero-media {
+    transition: transform 0.35s ease;
+}
+
+.hero-media:hover {
+    transform: scale(1.02);
+}
+
+.hero-image-frame {
+    overflow: hidden;
+}
+
+.modal-footer .btn {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--gray);
+    --bs-btn-border-color: var(--gray);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--gray-dark);
+    --bs-btn-hover-border-color: var(--gray-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--gray-dark);
+    --bs-btn-active-border-color: var(--gray-dark);
+}
+
+.form-check-input {
+    --bs-form-check-bg: #fff;
+    --bs-form-check-border-color: #8d9290;
+    --bs-form-check-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath d='m3 8 3 3 7-7' fill='none' stroke='%23fff' stroke-width='2'/%3e%3c/svg%3e");
+}
+
+.form-check-input:checked {
+    border-color: var(--gray);
+    background-color: var(--gray);
+}
+
+.form-check-input:focus {
+    border-color: var(--gray);
+    box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.18);
+}
+
+.skip-link {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+}
+
+.skip-link:focus {
+    top: 0.75rem;
+    left: 0.75rem;
+}
