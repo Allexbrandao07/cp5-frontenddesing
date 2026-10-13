@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <script>document.documentElement.classList.add('js')</script>
   <script src="js/data.js" defer></script>
+  <script src="js/artists-data.js" defer></script>
   <script src="js/main.js" defer></script>
 </head>
 <body id="top">
@@ -30,13 +31,40 @@
         <p class="eyebrow" data-reveal>Família TAMA</p>
         <h1 data-split="chars">Artistas</h1>
         <div class="phero__row">
-          <p class="lead" data-reveal>Do metal extremo ao pop de estádio. Cinco bateristas, cinco linguagens, um instrumento em comum.</p>
-          <p class="phero__idx" data-reveal>05 artistas · Brasil · Alemanha · EUA</p>
+          <p class="lead" data-reveal>Do metal extremo ao pop de estádio. Explore a família TAMA inteira, país por país.</p>
+          <p class="phero__idx" data-reveal>835 artistas · 60 países</p>
         </div>
       </div>
     </section>
 
-    <section class="wrap" id="artistas" aria-label="Lista de artistas"></section>
+    <!-- Todos os artistas: busca, filtro por país e grade com carregamento por partes -->
+    <section class="sec all" id="todos" aria-labelledby="t-todos">
+      <div class="wrap all__head">
+        <div>
+          <p class="eyebrow" data-reveal>Família TAMA</p>
+          <h2 id="t-todos" data-split style="margin-top:1.2rem">Todos os <em>artistas</em></h2>
+        </div>
+        <p class="lead" data-reveal>A lista oficial de bateristas da marca. Filtre por país ou busque pelo nome ou pela banda.</p>
+      </div>
+
+      <div class="toolbar">
+        <div class="wrap toolbar__in">
+          <div id="a-chips" class="chips" role="group" aria-label="Filtrar por país"></div>
+          <span id="a-total" class="toolbar__count" aria-live="polite"></span>
+          <label class="sr" for="a-pais">País</label>
+          <select id="a-pais"></select>
+          <label class="sr" for="a-q">Buscar artista</label>
+          <input id="a-q" type="search" placeholder="Nome ou banda…" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="wrap">
+        <div class="agrid" id="a-grid"></div>
+        <p id="a-vazio" class="empty" hidden>Nenhum artista encontrado. Limpe a busca ou escolha outro país.</p>
+        <div class="all__more"><button class="btn btn--ghost" type="button" id="a-mais"><span>Carregar mais</span></button></div>
+        <p class="phero__idx" style="margin-top:2.5rem">Fonte: lista de artistas de tama.com. Fotos © TAMA / Hoshino Gakki e respectivos fotógrafos.</p>
+      </div>
+    </section>
 
     <section class="cta" data-progress style="min-height:80svh">
       <div class="cta__bg"><img src="assets/images/play-dark.jpg" alt="" loading="lazy" data-parallax="0.14"></div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Produtos — TAMA Drums Brasil</title>
-  <meta name="description" content="Catálogo TAMA: baterias Starclassic e STAR, caixas S.L.P., pedais Iron Cobra e Speed Cobra, ferragens Roadpro e baquetas.">
+  <meta name="description" content="Catálogo TAMA com 475 produtos: baterias, caixas, ferragens, pedais, baquetas, acessórios e mais.">
   <meta property="og:title" content="Produtos — TAMA Drums Brasil">
   <meta property="og:description" content="Baterias, caixas, pedais, ferragens e baquetas TAMA.">
   <meta property="og:type" content="website">
@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <script>document.documentElement.classList.add('js')</script>
   <script src="js/data.js" defer></script>
+  <script src="js/products-data.js" defer></script>
   <script src="js/main.js" defer></script>
 </head>
 <body id="top">
@@ -30,39 +31,34 @@
         <p class="eyebrow" data-reveal>Catálogo 2026</p>
         <h1 data-split="chars">Produtos</h1>
         <div class="phero__row">
-          <p class="lead" data-reveal>Do primeiro kit à bateria da sua vida. Filtre por categoria, busque por linha e abra os detalhes de cada peça.</p>
-          <p class="phero__idx" data-reveal>Preços ilustrativos · site não oficial</p>
+          <p class="lead" data-reveal>Do primeiro kit à bateria da sua vida. Filtre por categoria e linha, ou busque pelo nome ou pelo modelo.</p>
+          <p class="phero__idx" data-reveal>475 produtos · 12 categorias</p>
         </div>
       </div>
     </section>
 
-    <div class="toolbar">
+    <div class="toolbar" id="catalogo">
       <div class="wrap toolbar__in">
-        <div id="filtros" class="chips" role="group" aria-label="Filtrar por categoria"></div>
-        <span id="total" class="toolbar__count" aria-live="polite"></span>
-        <label class="sr" for="q">Buscar produto</label>
-        <input id="q" type="search" placeholder="Buscar…" autocomplete="off">
-        <label class="sr" for="ord">Ordenar</label>
-        <select id="ord">
-          <option value="rel">Destaques</option>
-          <option value="az">Nome (A–Z)</option>
-          <option value="menor">Menor preço</option>
-          <option value="maior">Maior preço</option>
-        </select>
+        <div id="p-chips" class="chips" role="group" aria-label="Filtrar por categoria"></div>
+        <span id="p-total" class="toolbar__count" aria-live="polite"></span>
+        <label class="sr" for="p-linha">Linha</label>
+        <select id="p-linha"></select>
+        <label class="sr" for="p-q">Buscar produto</label>
+        <input id="p-q" type="search" placeholder="Nome ou modelo…" autocomplete="off">
       </div>
     </div>
 
-    <section class="wrap" style="padding-bottom:clamp(5rem,10vw,9rem)">
-      <div class="pgrid" id="catalogo"></div>
-      <p id="vazio" class="empty" hidden>Nenhum produto encontrado. Limpe a busca ou escolha outra categoria.</p>
+    <section class="wrap all" style="padding-top:0">
+      <div class="agrid" id="p-grid"></div>
+      <p id="p-vazio" class="empty" hidden>Nenhum produto encontrado. Limpe a busca ou escolha outra categoria.</p>
+      <div class="all__more"><button class="btn btn--ghost" type="button" id="p-mais"><span>Carregar mais</span></button></div>
+      <p class="phero__idx" style="margin-top:2.5rem">Fonte: catálogo de tama.com. Imagens © TAMA / Hoshino Gakki. Cada produto leva à página oficial.</p>
     </section>
-
-    <dialog id="dlg" class="modal" aria-label="Detalhes do produto"></dialog>
 
     <div class="marquee marquee--rev" aria-hidden="true">
       <div class="marquee__skew"><div class="marquee__track">
-        <span>Baterias</span><span>Caixas</span><span>Pedais</span><span>Ferragens</span><span>Baquetas</span><span>Signature</span>
-        <span>Baterias</span><span>Caixas</span><span>Pedais</span><span>Ferragens</span><span>Baquetas</span><span>Signature</span>
+        <span>Baterias</span><span>Caixas</span><span>Ferragens</span><span>Baquetas</span><span>Acessórios</span><span>Marcial</span>
+        <span>Baterias</span><span>Caixas</span><span>Ferragens</span><span>Baquetas</span><span>Acessórios</span><span>Marcial</span>
       </div></div>
     </div>
   </main>

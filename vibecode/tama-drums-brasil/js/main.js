@@ -6,7 +6,7 @@
   'use strict';
 
   /* ---------- 1. Utilitários ---------- */
-  const { IMG, CATEGORIAS, LINHAS, PRODUTOS, ARTISTAS } = window.TAMA;
+  const { IMG, CATEGORIAS, TOTAL_PRODUTOS, LINHAS, ARTISTAS } = window.TAMA;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const root = document.documentElement;
@@ -52,7 +52,7 @@
         <p class="ftr__claim">O nome mais forte<br>da bateria.</p>
       </div>
       <nav aria-label="Rodapé"><h2>Navegar</h2>${LINKS.map(([h, t]) => `<a href="${h}">${t}</a>`).join('')}</nav>
-      <nav aria-label="Linhas"><h2>Linhas</h2>${CATEGORIAS.map(c => `<a href="produtos.html#${encodeURIComponent(c)}">${c}</a>`).join('')}</nav>
+      <nav aria-label="Linhas"><h2>Linhas</h2>${CATEGORIAS.slice(0, 5).map(([k, t]) => `<a href="produtos.html?cat=${k}#catalogo">${t}</a>`).join('')}</nav>
       <div><h2>Oficial</h2>
         <a href="https://www.tama.com" target="_blank" rel="noopener">tama.com ↗</a>
         <a href="https://www.musical-express.com.br/marca/tama/" target="_blank" rel="noopener">Tama Brasil ↗</a>
@@ -313,7 +313,7 @@
     if (track) {
       track.insertAdjacentHTML('beforeend', LINHAS.map((l, i) => `
         <article class="panel" style="--i:${i}">
-          <a class="panel__media" href="produtos.html#${encodeURIComponent(l.cat)}" data-cursor="Ver linha" aria-label="Ver ${esc(l.cat)}">
+          <a class="panel__media" href="${l.link}" data-cursor="Ver linha" aria-label="Ver ${esc(l.cat)}">
             <img src="${IMG}${l.img}" alt="" loading="lazy" style="object-position:${l.pos}">
           </a>
           <div class="panel__body">
@@ -321,12 +321,12 @@
             <p class="eyebrow">${esc(l.tag)}</p>
             <h3>${esc(l.nome)}</h3>
             <p>${esc(l.txt)}</p>
-            <a class="link" href="produtos.html#${encodeURIComponent(l.cat)}">Ver ${esc(l.cat.toLowerCase())} ${ARROW}</a>
+            <a class="link" href="${l.link}">Ver ${esc(l.cat.toLowerCase())} ${ARROW}</a>
           </div>
         </article>`).join('') + `
         <article class="panel panel--end">
           <p class="eyebrow">Catálogo completo</p>
-          <h3>${PRODUTOS.length} produtos.<br>Um som.</h3>
+          <h3>${TOTAL_PRODUTOS} produtos.<br>Um som.</h3>
           <a class="btn" href="produtos.html"><span>Ver todos</span>${ARROW}</a>
         </article>`);
     }
@@ -335,7 +335,7 @@
     const list = $('.roster');
     if (list) {
       list.innerHTML = ARTISTAS.map((a, i) => `
-        <a class="roster__row" href="artistas.html#${slug(a.n)}" data-i="${i}" data-reveal style="--i:${i}">
+        <a class="roster__row" href="artistas.html?q=${encodeURIComponent(a.n)}#todos" data-i="${i}" data-reveal style="--i:${i}">
           <span class="roster__n">${pad2(i + 1)}</span>
           <span class="roster__name">${esc(a.n)}</span>
           <span class="roster__band">${esc(a.banda)}</span>
@@ -362,102 +362,139 @@
       }
     }
   };
-  const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
   /* ---------- 9. Drum pad: ver js/kit.js ---------- */
 
   /* ---------- 10. Produtos ---------- */
+  /* Catálogo oficial (js/products-data.js): categoria, linha, busca e carregamento por partes */
   const initCatalog = () => {
-    const grid = $('#catalogo');
-    if (!grid) return;
-    const q = $('#q'), ord = $('#ord'), empty = $('#vazio'), filtros = $('#filtros'), dlg = $('#dlg'), total = $('#total');
-    const fromHash = () => { const h = decodeURIComponent(location.hash.slice(1)); return CATEGORIAS.includes(h) ? h : 'Todos'; };
-    let cat = fromHash();
+    const grid = $('#p-grid'), ALL = window.TAMA_PRODUCTS;
+    if (!grid || !ALL) return;
+    const chips = $('#p-chips'), sel = $('#p-linha'), q = $('#p-q'), total = $('#p-total'), empty = $('#p-vazio'), more = $('#p-mais');
+    const STEP = 40, LABEL = Object.fromEntries(CATEGORIAS);
+    const norm = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const data = ALL.map(p => ({ id: p[0], nome: p[1], cat: p[2], linha: p[3], url: 'https://www.tama.com/asia/products/' + p[4], busca: norm(`${p[1]} ${p[3]} ${LABEL[p[2]]}`) }));
+    const count = {};
+    data.forEach(p => { count[p.cat] = (count[p.cat] || 0) + 1; });
 
-    const chips = () => {
-      filtros.innerHTML = ['Todos', ...CATEGORIAS].map(c => {
-        const n = c === 'Todos' ? PRODUTOS.length : PRODUTOS.filter(p => p.cat === c).length;
-        return `<button class="chip" type="button" aria-pressed="${c === cat}" data-cat="${c}">${c}<sup>${pad2(n)}</sup></button>`;
-      }).join('');
+    const params = new URLSearchParams(location.search);
+    let cat = count[params.get('cat')] ? params.get('cat') : '', linha = params.get('linha') || '', list = [], shown = 0;
+    q.value = params.get('q') || '';
+
+    const drawFilters = () => {
+      chips.innerHTML = `<button class="chip" type="button" data-cat="" aria-pressed="${cat === ''}">Todos<sup>${data.length}</sup></button>` +
+        CATEGORIAS.map(([k, t]) => `<button class="chip" type="button" data-cat="${k}" aria-pressed="${cat === k}">${t}<sup>${pad2(count[k] || 0)}</sup></button>`).join('');
+      /* As linhas disponíveis dependem da categoria escolhida */
+      const n = {};
+      data.forEach(p => { if ((!cat || p.cat === cat) && p.linha) n[p.linha] = (n[p.linha] || 0) + 1; });
+      const linhas = Object.keys(n).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      if (!n[linha]) linha = '';
+      sel.innerHTML = '<option value="">Todas as linhas</option>' + linhas.map(l => `<option value="${esc(l)}"${l === linha ? ' selected' : ''}>${esc(l)} (${n[l]})</option>`).join('');
     };
 
     const card = (p, i) => `
-      <article class="pcard" style="--i:${i}" data-tilt>
-        <button class="pcard__hit" type="button" data-id="${p.id}" data-cursor="Detalhes" aria-label="Ver detalhes de ${esc(p.nome)}"></button>
-        <div class="pcard__media">
-          <img src="${IMG}${p.img}" alt="${esc(p.nome)}" loading="lazy" style="object-position:${p.pos || '50% 50%'}">
-          ${p.novo ? '<span class="badge">Novo</span>' : ''}
-          ${p.ilustr ? '<span class="badge badge--ghost">Imagem ilustrativa</span>' : ''}
-        </div>
-        <div class="pcard__body">
-          <p class="eyebrow">${esc(p.linha)}</p>
-          <h3>${esc(p.nome)}</h3>
-          <p class="pcard__price">${brl(p.preco)}<small>preço ilustrativo</small></p>
-        </div>
-      </article>`;
+      <a class="acard acard--prod" href="${p.url}" target="_blank" rel="noopener" style="--i:${i % STEP}" data-cursor="Ver">
+        <span class="acard__media"><img src="assets/products/${p.id}.webp" alt="${esc(p.nome)}" loading="lazy"></span>
+        <span class="acard__body">
+          <span class="acard__pais">${esc(LABEL[p.cat])}${p.linha ? ' · ' + esc(p.linha) : ''}</span>
+          <strong>${esc(p.nome)}</strong>
+        </span>
+      </a>`;
 
+    const add = () => {
+      grid.insertAdjacentHTML('beforeend', list.slice(shown, shown + STEP).map(card).join(''));
+      shown = Math.min(shown + STEP, list.length);
+      more.hidden = shown >= list.length;
+      total.textContent = `${shown} de ${list.length} ${list.length === 1 ? 'produto' : 'produtos'}`;
+    };
     const draw = () => {
-      const t = q.value.trim().toLowerCase();
-      const r = PRODUTOS.filter(p => (cat === 'Todos' || p.cat === cat) && (p.nome + p.linha + p.desc + p.cat).toLowerCase().includes(t));
-      const s = ord.value;
-      r.sort((a, b) => s === 'az' ? a.nome.localeCompare(b.nome, 'pt-BR') : s === 'menor' ? a.preco - b.preco : s === 'maior' ? b.preco - a.preco : 0);
-      empty.hidden = r.length > 0;
-      total.textContent = `${pad2(r.length)} ${r.length === 1 ? 'produto' : 'produtos'}`;
-      grid.classList.remove('is-drawn');
-      grid.innerHTML = r.map(card).join('');
-      void grid.offsetWidth;
-      grid.classList.add('is-drawn');
+      const t = norm(q.value.trim());
+      list = data.filter(p => (!cat || p.cat === cat) && (!linha || p.linha === linha) && p.busca.includes(t));
+      grid.innerHTML = ''; shown = 0;
+      empty.hidden = list.length > 0;
+      add();
+    };
+    const sync = () => {
+      const u = new URLSearchParams();
+      if (cat) u.set('cat', cat);
+      if (linha) u.set('linha', linha);
+      history.replaceState(null, '', [...u].length ? `?${u}#catalogo` : location.pathname);
+      drawFilters(); draw();
     };
 
-    filtros.addEventListener('click', e => {
-      const b = e.target.closest('.chip');
-      if (!b) return;
-      cat = b.dataset.cat;
-      history.replaceState(null, '', cat === 'Todos' ? location.pathname : '#' + encodeURIComponent(cat));
-      chips(); draw();
-    });
+    chips.addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) { cat = b.dataset.cat; linha = ''; sync(); } });
+    sel.addEventListener('change', () => { linha = sel.value; sync(); });
     q.addEventListener('input', draw);
-    ord.addEventListener('change', draw);
-    addEventListener('hashchange', () => { cat = fromHash(); chips(); draw(); });
-
-    grid.addEventListener('click', e => {
-      const b = e.target.closest('[data-id]');
-      if (!b) return;
-      const p = PRODUTOS.find(x => x.id === b.dataset.id);
-      dlg.innerHTML = `
-        <div class="modal__media"><img src="${IMG}${p.img}" alt="${esc(p.nome)}" style="object-position:${p.pos || '50% 50%'}">
-          ${p.ilustr ? '<span class="badge badge--ghost">Imagem ilustrativa</span>' : ''}</div>
-        <div class="modal__body">
-          <button class="modal__x" type="button" aria-label="Fechar detalhes">Fechar ✕</button>
-          <p class="eyebrow">${esc(p.cat)} · ${esc(p.linha)}</p>
-          <h2>${esc(p.nome)}</h2>
-          <p class="modal__desc">${esc(p.desc)}</p>
-          <dl class="specs">${p.specs.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
-          <p class="pcard__price">${brl(p.preco)}<small>preço ilustrativo</small></p>
-          <a class="btn" href="suporte.html#contato"><span>Consultar disponibilidade</span>${ARROW}</a>
-        </div>`;
-      dlg.showModal();
-    });
-    dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('.modal__x')) dlg.close(); });
-
-    chips(); draw();
+    more.addEventListener('click', add);
+    drawFilters(); draw();
   };
 
   /* ---------- 11. Artistas ---------- */
-  const initArtists = () => {
-    const box = $('#artistas');
-    if (!box) return;
-    box.innerHTML = ARTISTAS.map((a, i) => `
-      <article class="artist" id="${slug(a.n)}" data-progress>
-        <div class="artist__media" data-reveal="clip"><img src="${IMG}${a.img}" alt="${esc(a.n)}" loading="lazy" style="object-position:${a.pos}"></div>
-        <div class="artist__body">
-          <span class="artist__num" aria-hidden="true">${pad2(i + 1)}</span>
-          <p class="eyebrow" data-reveal>${esc(a.pais)} · ${esc(a.banda)}</p>
-          <h2 data-split="chars">${esc(a.n)}</h2>
-          <p class="artist__bio" data-reveal>${esc(a.bio)}</p>
-          <ul class="tags" data-stagger>${a.gear.map(g => `<li>${esc(g)}</li>`).join('')}</ul>
-        </div>
-      </article>`).join('');
+  /* Lista completa de artistas (js/artists-data.js): filtro por país, busca e carregamento por partes */
+  const initAllArtists = () => {
+    const grid = $('#a-grid'), ALL = window.TAMA_ARTISTS;
+    if (!grid || !ALL) return;
+    const chips = $('#a-chips'), sel = $('#a-pais'), q = $('#a-q'), total = $('#a-total'), empty = $('#a-vazio'), more = $('#a-mais');
+    const STEP = 40;
+    const norm = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    let names;
+    try { names = new Intl.DisplayNames(['pt-BR'], { type: 'region' }); } catch { names = null; }
+    const pais = cc => { try { return (names && names.of(cc)) || cc; } catch { return cc; } };
+
+    const count = {};
+    ALL.forEach(a => { count[a[2]] = (count[a[2]] || 0) + 1; });
+    const codes = Object.keys(count).sort((a, b) => pais(a).localeCompare(pais(b), 'pt-BR'));
+    /* Brasil primeiro, depois ordem alfabética */
+    const data = ALL.map(a => ({ id: a[0], nome: a[1], cc: a[2], bandas: a[3], busca: norm(a[1] + ' ' + a[3]) }))
+      .sort((a, b) => (b.cc === 'BR') - (a.cc === 'BR') || a.nome.localeCompare(b.nome, 'pt-BR'));
+
+    const params = new URLSearchParams(location.search);
+    const fromUrl = (params.get('pais') || '').toUpperCase();
+    q.value = params.get('q') || '';
+    let cc = count[fromUrl] ? fromUrl : '', list = [], shown = 0;
+
+    const TOP = ['BR', ...codes.filter(c => c !== 'BR').sort((a, b) => count[b] - count[a]).slice(0, 5)];
+    const flag = c => `<img class="flag" src="assets/flags/${c.toLowerCase()}.png" alt="" width="21" height="14" loading="lazy">`;
+    const drawFilters = () => {
+      chips.innerHTML = `<button class="chip" type="button" data-cc="" aria-pressed="${cc === ''}">Todos<sup>${ALL.length}</sup></button>` +
+        TOP.map(c => `<button class="chip" type="button" data-cc="${c}" aria-pressed="${cc === c}">${flag(c)}${esc(pais(c))}<sup>${pad2(count[c])}</sup></button>`).join('');
+      sel.innerHTML = '<option value="">Todos os países</option>' + codes.map(c => `<option value="${c}"${c === cc ? ' selected' : ''}>${esc(pais(c))} (${count[c]})</option>`).join('');
+    };
+
+    const card = (a, i) => `
+      <a class="acard" href="https://www.tama.com/asia/artists/detail/${a.id}.html" target="_blank" rel="noopener" style="--i:${i % STEP}" data-cursor="Perfil">
+        <span class="acard__media"><img src="assets/artists/${a.id}.webp" alt="${esc(a.nome)}" loading="lazy" width="340" height="340"></span>
+        <span class="acard__body">
+          <span class="acard__pais">${flag(a.cc)}${esc(pais(a.cc))}</span>
+          <strong>${esc(a.nome)}</strong>
+          ${a.bandas ? `<small>${esc(a.bandas)}</small>` : ''}
+        </span>
+      </a>`;
+
+    const add = () => {
+      grid.insertAdjacentHTML('beforeend', list.slice(shown, shown + STEP).map(card).join(''));
+      shown = Math.min(shown + STEP, list.length);
+      more.hidden = shown >= list.length;
+      total.textContent = `${shown} de ${list.length} ${list.length === 1 ? 'artista' : 'artistas'}`;
+    };
+    const draw = () => {
+      const t = norm(q.value.trim());
+      list = data.filter(a => (!cc || a.cc === cc) && a.busca.includes(t));
+      grid.innerHTML = ''; shown = 0;
+      empty.hidden = list.length > 0;
+      add();
+    };
+    const setCc = v => {
+      cc = v;
+      history.replaceState(null, '', v ? `?pais=${v}#todos` : location.pathname + location.hash);
+      drawFilters(); draw();
+    };
+
+    chips.addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) setCc(b.dataset.cc); });
+    sel.addEventListener('change', () => setCc(sel.value));
+    q.addEventListener('input', draw);
+    more.addEventListener('click', add);
+    drawFilters(); draw();
   };
 
   /* ---------- 12. História: ano fixo que muda conforme a rolagem ---------- */
@@ -508,7 +545,7 @@
   };
 
   /* ---------- Inicialização ---------- */
-  initHome(); initCatalog(); initArtists(); initHistory(); initSupport(); initPointer();
+  initHome(); initCatalog(); initAllArtists(); initHistory(); initSupport(); initPointer();
   observe();
   collect();
   addEventListener('resize', () => { vh = innerHeight; collect(); });

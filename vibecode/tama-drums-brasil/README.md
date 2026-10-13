@@ -7,13 +7,17 @@ Site em HTML, CSS e JavaScript puros, sem build e sem bibliotecas. Abra `index.h
 | Arquivo | Conteúdo |
 | --- | --- |
 | `index.html` | Hero, manifesto, linhas (rolagem horizontal), engenharia, drum pad, artistas, legado |
-| `produtos.html` | Catálogo com filtro, busca, ordenação e modal de detalhes |
-| `artistas.html` | Perfil dos cinco artistas |
+| `produtos.html` | Catálogo oficial com filtro por categoria e linha, busca e carregamento por partes |
+| `artistas.html` | Lista completa de artistas, com busca e filtro por país |
 | `historia.html` | Linha do tempo de 1908 a 2024 |
 | `suporte.html` | Atalhos, FAQ e formulário de contato (simulado) |
 | `css/styles.css` | Todos os estilos, com índice no topo |
-| `js/data.js` | **Dados editáveis**: produtos, artistas, linhas e categorias |
+| `js/data.js` | **Dados editáveis**: destaques da home (linhas e artistas) e categorias |
+| `js/products-data.js` | Catálogo completo (475 produtos, 12 categorias), coletado de tama.com |
+| `assets/products/` | Imagem de cada produto (`<id>.webp`, recorte com fundo transparente) |
 | `js/main.js` | Cabeçalho/rodapé, animações e a lógica de cada página, com índice no topo |
+| `js/artists-data.js` | Lista completa de artistas (835, de 60 países), coletada de tama.com |
+| `assets/artists/`, `assets/flags/` | Foto de cada artista (`<id>.webp`, 340px) e bandeiras dos países |
 | `js/kit.js` | Bateria tocável da home: desenho em SVG, samples e groove de demonstração |
 | `js/samples.js` | Cópia dos samples embutida em base64 (arquivo gerado, ver abaixo) |
 | `../samples/` | Samples da TAMA Starclassic, um `.mp3` por peça. Fica em `vibecode/samples/`, ao lado da pasta do site |
@@ -55,18 +59,28 @@ Ao abrir o site direto do disco (`file://`), o navegador bloqueia a leitura dos 
 python tools/build-samples.py
 ```
 
+## Artistas
+
+- **Destaques** (seção "Quem toca TAMA" da home): os cinco de `ARTISTAS` em `js/data.js`, com as fotos oficiais em alta (`artist-*-hd.jpg`).
+- **Lista completa** (página Artistas, seção "Todos os artistas"): vem de `js/artists-data.js`, uma linha por artista no formato `[id oficial, nome, código do país, bandas]`. Tem busca por nome ou banda, filtro por país (os nomes dos países são traduzidos pelo próprio navegador) e carrega 40 por vez. Brasileiros aparecem primeiro. `artistas.html?pais=BR#todos` abre já filtrado por país e `artistas.html?q=nome#todos` já com a busca preenchida (é o que os nomes da home usam).
+- Nomes, países, bandas, fotos e bandeiras foram coletados da lista de artistas de bateria de tama.com em outubro de 2026. Cada cartão leva ao perfil oficial do artista.
+
+## Produtos
+
+- **Catálogo** (página Produtos): vem de `js/products-data.js`, uma linha por produto no formato `[id, nome, categoria, linha, caminho da página oficial]`. Tem filtro por categoria, filtro por linha (as opções mudam conforme a categoria), busca por nome ou modelo e carrega 40 por vez. Cada cartão leva à página oficial do produto.
+- `produtos.html?cat=snare_drums#catalogo` abre já filtrado por categoria; `&linha=Pedais` filtra também a linha e `?q=texto` preenche a busca. É o que os painéis de linhas da home e o rodapé usam.
+- Nomes, categorias, linhas e imagens foram coletados de tama.com/asia/products em outubro de 2026. Os nomes das categorias e de parte das linhas foram traduzidos; nomes de produtos ficaram como no site oficial.
+- O catálogo não tem preços: o site oficial não publica, e os valores inventados da primeira versão foram removidos.
+
 ## Imagens (`assets/images/`)
 
 - **Originais do projeto**: logos, `product-*` e `artist-*`. `product-hero-01` e `product-pedais-03` foram convertidos de PNG para JPG para reduzir o peso. `tama-logo-white.png` é a logo preta recortada e convertida para branco.
 - **Unsplash (licença livre)**: `stage-*`, `play-*` e `hardware-*`. São fotos de ambiente, não fotos de produtos TAMA. Fotógrafos: Vitalii Khodzinskyi, Junseong Lee, Magnus Lunay, Aliane Schwartzhaupt, Matt Roskovec, Michael Dobrinski, Josh Sorenson e Shawn Sim.
-- Produtos que usam foto de banco têm `ilustr: true` em `js/data.js` e mostram o selo "Imagem ilustrativa".
 - A ligação foto ↔ artista segue o nome dos arquivos originais; confira antes de publicar.
 
 ## O que é ilustrativo
 
-- **Preços**: todos inventados. Edite `preco` em `js/data.js`.
 - **Contato**: e-mail, telefone e horário são fictícios. O formulário só valida os campos, não envia nada.
-- **Catálogo**: nomes de linhas e modelos são reais, mas especificações e disponibilidade no Brasil não foram conferidas no catálogo oficial.
 
 ## Fontes consultadas (outubro de 2026)
 
