@@ -1,0 +1,5 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "/tama-drums-brasil/", "permanent": false }
+  ]
+}

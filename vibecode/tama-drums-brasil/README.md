@@ -1,96 +1,156 @@
-# TAMA Drums Brasil — protótipo estático NÃO OFICIAL
+# TAMA Drums Brasil
 
-Site em HTML, CSS e JavaScript puros, sem build e sem bibliotecas. Abra `index.html` no navegador ou use o Live Server do VS Code.
+**Aluno:** Állex Augusto de Souza Brandão — **RM571383**
 
-## Estrutura
+Atividade de **vibecode**: um site multipágina para a TAMA Drums no Brasil, feito em HTML, CSS e JavaScript puros, com a IA como parceira de desenvolvimento.
+
+> **Site publicado:** **[tama-drums-brasil.vercel.app](https://tama-drums-brasil.vercel.app)**
+
+Este README registra o processo, e não só o resultado: o prompt base, o que mudou em relação a ele, quais decisões foram minhas, como e por quê, além das referências, da paleta e das fontes que levaram à versão final.
+
+---
+
+## 1. Como rodar
+
+Abra `index.html` no navegador ou use o **Live Server** do VS Code. Não há build nem dependências.
 
 | Arquivo | Conteúdo |
 | --- | --- |
-| `index.html` | Hero, manifesto, linhas (rolagem horizontal), engenharia, drum pad, artistas, legado |
-| `produtos.html` | Catálogo oficial com filtro por categoria e linha, busca e carregamento por partes |
-| `artistas.html` | Lista completa de artistas, com busca e filtro por país |
+| `index.html` | Hero, manifesto, linhas (rolagem horizontal), engenharia, bateria tocável, artistas, legado |
+| `produtos.html` | Catálogo oficial (475 produtos, 12 categorias) com filtro, busca e carregamento por partes |
+| `artistas.html` | Cinco artistas em destaque + lista completa (835 artistas de 60 países) |
 | `historia.html` | Linha do tempo de 1908 a 2024 |
 | `suporte.html` | Atalhos, FAQ e formulário de contato (simulado) |
 | `css/styles.css` | Todos os estilos, com índice no topo |
-| `js/data.js` | **Dados editáveis**: destaques da home (linhas e artistas) e categorias |
-| `js/products-data.js` | Catálogo completo (475 produtos, 12 categorias), coletado de tama.com |
-| `assets/products/` | Imagem de cada produto (`<id>.webp`, recorte com fundo transparente) |
-| `js/main.js` | Cabeçalho/rodapé, animações e a lógica de cada página, com índice no topo |
-| `js/artists-data.js` | Lista completa de artistas (835, de 60 países), coletada de tama.com |
-| `assets/artists/`, `assets/flags/` | Foto de cada artista (`<id>.webp`, 340px) e bandeiras dos países |
-| `js/kit.js` | Bateria tocável da home: desenho em SVG, samples e groove de demonstração |
-| `js/samples.js` | Cópia dos samples embutida em base64 (arquivo gerado, ver abaixo) |
-| `../samples/` | Samples da TAMA Starclassic, um `.mp3` por peça. Fica em `vibecode/samples/`, ao lado da pasta do site |
+| `js/main.js` | Cabeçalho/rodapé, animações e a lógica de cada página |
+| `js/data.js` | Destaques da home (linhas e artistas) e categorias |
+| `js/products-data.js`, `js/artists-data.js` | Catálogo e artistas coletados de tama.com |
+| `js/kit.js`, `js/samples.js` | Bateria tocável (SVG + Web Audio) e cópia embutida dos samples |
+| `../samples/` | Samples `.mp3` de uma TAMA Starclassic, um por peça |
 
-Cabeçalho e rodapé são montados por `js/main.js`, então só existem em um lugar.
+---
 
-## Como as animações funcionam
+## 2. Prompt base
 
-Tudo é controlado por atributos no HTML:
+Este foi o primeiro prompt, que serviu de briefing para todo o projeto. Escrevi em inglês para ter mais precisão técnica, e pedi o conteúdo do site em pt-BR.
 
-- `data-reveal` (`up` padrão, `clip`, `line`): entra quando aparece na tela.
-- `data-split` (`words` padrão ou `chars`): divide o texto e revela palavra por palavra ou letra por letra.
-- `data-stagger`: aplica `data-reveal` em cascata nos filhos.
-- `data-scrub`: o texto "acende" conforme a rolagem.
-- `data-parallax="0.12"`: desloca o elemento em relação ao pai durante a rolagem.
-- `data-progress` (`view`, `exit`, `pin`, `enter`, `through`): o JS grava a variável CSS `--p` (0 a 1) e o CSS decide o que fazer com ela. É o que move a rolagem horizontal, o hero e a linha do tempo.
-- `data-count="50"`: contador animado.
-- `data-tilt` e `data-cursor="Texto"`: inclinação 3D e rótulo no cursor (só em desktop).
 
-Com `prefers-reduced-motion` ativo, as animações são desligadas e o conteúdo aparece direto. Em telas pequenas a rolagem horizontal vira um carrossel nativo.
+```markdown
+# Master Prompt — TAMA Drums Brasil Website
 
-## Identidade TAMA
+## Role and working mode
+Act as a senior digital product designer, UX/UI designer, front-end developer, motion designer,
+and technical content researcher. Build a polished, complete, responsive, multi-page website
+concept for TAMA Drums Brasil, a leading drum and percussion brand. [...] Do not stop at a
+landing-page mockup: deliver a cohesive website with functional navigation and multiple pages.
 
-Os elementos abaixo vêm das peles de bumbo da marca (duas listras, uma grossa e uma fina, com o emblema sobre elas) e ficam na seção 23 de `css/styles.css`:
+## Primary objective
+[...] bold, precise, premium, and performance-driven — not like a generic music-store template.
+Vanilla HTML, CSS, and JavaScript only. No frameworks, no build tools, no package manager.
 
-- **Títulos**: `h1`, `h2` e o menu móvel usam Alfa Slab One em itálico (`--slab`), próxima do desenho da logomarca. O restante continua em Archivo.
-- **Emblema**: `<span class="mark-box"><i class="mark"></i></span>`. Os arquivos são `tama-icon.png` (branco) e `tama-icon-red.png`. É usado como imagem de fundo, não como máscara CSS, porque máscaras não carregam ao abrir o site direto do disco.
-- **Emblema do hero**: `.hero__mark`, numa coluna reservada à direita (`--col`). Usa a versão cheia do emblema (`tama-icon-solid.png` e `tama-icon-solid-red.png`) em sete camadas empilhadas, que formam a espessura. Inclina em 3D com o mouse e dá meia-volta ao rolar.
-- **Trilho lateral**: `.rail`, em telas a partir de 1100px. Substitui a barra de progresso do topo: as listras enchem de vermelho e o emblema desce junto com a página. Ocupa uma margem própria à esquerda (`--rail`), então o conteúdo nunca passa por baixo dele.
-- O emblema também aparece no pré-carregamento, nos separadores do marquee, no bumbo da bateria tocável e no favicon.
+## Source assets provided by the user
+- Images 1 and 2: alternate versions of the TAMA logo. Do not redraw, distort or recolor.
+- Images 3, 4 and 11: product photographs/wallpapers.
+- Images 6–10: TAMA artist endorsers; filenames include nationality — show it under the name.
+- Image 5: no purpose specified.
 
-## Bateria tocável ("Toque agora")
+## Research and factual accuracy
+Official TAMA site > official artist pages > Brazilian distributor/retailers.
+Do not invent dates, specs, endorsements, biographies. Website in pt-BR.
 
-O kit é desenhado em SVG por `js/kit.js` e toca os samples de `../samples/` (pasta `vibecode/samples/`) pela Web Audio API. O código normaliza o volume de cada arquivo, pula o silêncio inicial e ajusta a mixagem em `MIX`.
+### Pricing policy
+Prices in BRL (R$ 1.234,56). Never convert a foreign price or invent an official-looking price.
+Fallback: "Preço sob consulta" or a clearly labeled illustrative price documented in README.
 
-Ao abrir o site direto do disco (`file://`), o navegador bloqueia a leitura dos `.mp3`, então o código usa `js/samples.js`, que traz os mesmos arquivos embutidos. **Se trocar um sample, mantenha o nome do arquivo e gere `js/samples.js` de novo** na pasta do site:
+## Art direction and design system
+Dark, high-impact, editorial, cinematic. Avoid generic e-commerce, excessive gradients,
+glassmorphism, random neon.
+Palette: #0A0A0B, #171719, #242428, #B9B9BE, #F5F5F4, #D71920 (red), #65151D (burgundy), #38383D.
+Typography: condensed/industrial display + legible sans-serif, with offline fallbacks.
 
+## Required website architecture
+index.html, produtos.html (Caixas, Pedais, Ferragens, Baquetas, Baterias/Shell Packs — filters,
+search, sorting, details modal, Intl.NumberFormat BRL), artistas.html (nationality directly below
+name), historia.html (verified timeline), suporte.html (no invented addresses/phones).
+
+## Interaction and motion design
+Cinematic hero reveal, IntersectionObserver reveals, subtle parallax, rhythmic red accents,
+sticky header, drumstick/rim/lug-inspired motif. Honor prefers-reduced-motion, no scroll-jacking,
+keyboard accessible, modals close with Escape.
+
+## Technical requirements / README / QA checklist / Final delivery
+Semantic HTML5, CSS variables, responsive, alt text, lazy-load, Open Graph, README with asset
+mapping, price sources, history sources and pending items. Do not claim anything is complete
+unless it was actually implemented or verified.
 ```
-python tools/build-samples.py
-```
 
-## Artistas
+O prompt original também tinha um JSON de briefing estruturado (projeto, direção de arte, páginas, categorias obrigatórias, política de preços e interações), que reforçava as mesmas restrições.
 
-- **Destaques** (seção "Quem toca TAMA" da home): os cinco de `ARTISTAS` em `js/data.js`, com as fotos oficiais em alta (`artist-*-hd.jpg`).
-- **Lista completa** (página Artistas, seção "Todos os artistas"): vem de `js/artists-data.js`, uma linha por artista no formato `[id oficial, nome, código do país, bandas]`. Tem busca por nome ou banda, filtro por país (os nomes dos países são traduzidos pelo próprio navegador) e carrega 40 por vez. Brasileiros aparecem primeiro. `artistas.html?pais=BR#todos` abre já filtrado por país e `artistas.html?q=nome#todos` já com a busca preenchida (é o que os nomes da home usam).
-- Nomes, países, bandas, fotos e bandeiras foram coletados da lista de artistas de bateria de tama.com em outubro de 2026. Cada cartão leva ao perfil oficial do artista.
 
-## Produtos
+**Por que escrevi o prompt assim:** eu queria evitar o resultado genérico que a IA costuma entregar ("site de loja de música"). Por isso o prompt define um papel (designer sênior + dev + pesquisador), um stack fechado, o uso de cada imagem que forneci e, principalmente, regras contra inventar fatos e preços. A IA tende a "preencher" lacunas com dados plausíveis e falsos.
 
-- **Catálogo** (página Produtos): vem de `js/products-data.js`, uma linha por produto no formato `[id, nome, categoria, linha, caminho da página oficial]`. Tem filtro por categoria, filtro por linha (as opções mudam conforme a categoria), busca por nome ou modelo e carrega 40 por vez. Cada cartão leva à página oficial do produto.
-- `produtos.html?cat=snare_drums#catalogo` abre já filtrado por categoria; `&linha=Pedais` filtra também a linha e `?q=texto` preenche a busca. É o que os painéis de linhas da home e o rodapé usam.
-- Nomes, categorias, linhas e imagens foram coletados de tama.com/asia/products em outubro de 2026. Os nomes das categorias e de parte das linhas foram traduzidos; nomes de produtos ficaram como no site oficial.
-- O catálogo não tem preços: o site oficial não publica, e os valores inventados da primeira versão foram removidos.
+---
 
-## Imagens (`assets/images/`)
+## 3. O que mudou em relação ao prompt base, e por quê
 
-- **Originais do projeto**: logos, `product-*` e `artist-*`. `product-hero-01` e `product-pedais-03` foram convertidos de PNG para JPG para reduzir o peso. `tama-logo-white.png` é a logo preta recortada e convertida para branco.
-- **Unsplash (licença livre)**: `stage-*`, `play-*` e `hardware-*`. São fotos de ambiente, não fotos de produtos TAMA. Fotógrafos: Vitalii Khodzinskyi, Junseong Lee, Magnus Lunay, Aliane Schwartzhaupt, Matt Roskovec, Michael Dobrinski, Josh Sorenson e Shawn Sim.
-- A ligação foto ↔ artista segue o nome dos arquivos originais; confira antes de publicar.
+As mudanças vieram de revisar o que a IA entregava. Cada linha abaixo é um ponto em que o resultado não me satisfez ou em que eu enxerguei uma oportunidade melhor.
 
-## O que é ilustrativo
+### 3.1 Decisões minhas (direção do projeto)
 
-- **Contato**: e-mail, telefone e horário são fictícios. O formulário só valida os campos, não envia nada.
+| O que mudou | Como | Por quê |
+| --- | --- | --- |
+| **Preços removidos** | O prompt pedia preços em R$. A primeira versão do catálogo trazia valores que não tinham fonte confiável, e eu mandei tirar todos. | Preço sem fonte parece oficial e engana quem visita. O próprio prompt proibia inventar, e a IA acabou fazendo isso. Preferi não ter preço a ter preço falso. |
+| **Catálogo real no lugar de poucos produtos de exemplo** | Os poucos produtos escritos à mão deram lugar a 475 produtos e 12 categorias coletados de tama.com, cada um com imagem e link para a página oficial. | Um catálogo inventado ou incompleto não informa nada. Com dados oficiais, o site fica útil e verificável. |
+| **Artistas: de 5 perfis para uma lista completa** | Mantive os 5 artistas das minhas fotos como destaque e acrescentei os 835 artistas oficiais, com busca, filtro por país e bandeira. Os brasileiros aparecem primeiro. | O prompt pedia a nacionalidade bem visível. A bandeira e o filtro por país resolvem isso de forma direta, e destacar os brasileiros faz sentido para um site "Brasil". |
+| **Bateria tocável na home ("Toque agora")** | Forneci samples reais de uma TAMA Starclassic (`vibecode/samples/`). O kit é desenhado em SVG e toca pela Web Audio API, com mouse ou teclado. | Isso não estava no prompt. Para uma marca de bateria, *ouvir* o instrumento comunica mais do que qualquer texto. É o elemento mais memorável do site. |
+| **Identidade puxada da pele de bumbo TAMA** | Pedi que a identidade viesse do produto real: as duas listras (uma grossa e uma fina) com o emblema sobre elas. Isso virou o trilho lateral de progresso, os separadores e o emblema 3D do hero. | O prompt sugeria um motivo de baquetas ou aros. As listras da pele de bumbo são mais reconhecíveis como TAMA e dão um sistema visual próprio, em vez de enfeite genérico. |
+| **Correções do FAQ, do hero e do manifesto** | Revisei texto e layout dessas seções em um segundo ciclo (commit `b25af54`). | Alguns textos estavam genéricos ou errados, e o hero tinha problemas de composição. |
+| **Deploy na Vercel com nome próprio** | Publiquei com a Vercel CLI e criei o alias `tama-drums-brasil.vercel.app`. | Um link com o nome do projeto é mais profissional para apresentar. |
 
-## Fontes consultadas (outubro de 2026)
+### 3.2 Ajustes de design em relação ao briefing
 
-- História: Wikipédia (Tama Drums, Tama Iron Cobra), Drummerszone, blog da Gear4music. As datas do início das baterias Star e do lançamento do Iron Cobra variam entre as fontes, por isso o texto usa "poucos anos depois" e "início dos anos 90".
-- Anika Nilles: Thomann e Blabbermouth (caixa signature AN1465 e turnê com o Rush).
-- Eloy Casagrande: Drumming News Network e BeatIt (festival de 50 anos da TAMA).
-- Stewart Copeland: Thomann (caixa signature SC145).
-- Clay Aeschliman: Modern Drummer.
-- Matheus Falcão: página Tama Brasil da Musical Express.
+| Item | No prompt | No final | Por quê |
+| --- | --- | --- | --- |
+| **Fundo** | `#0A0A0B` | `#070707` | Um preto mais profundo dá mais contraste às fotos de palco e ao vermelho. |
+| **Texto** | `#F5F5F4` (frio) | `#F4F0E9` (off-white quente) | Um branco levemente quente lembra papel e catálogo impresso e cansa menos a vista no escuro. |
+| **Vermelho** | `#D71920` | `#E3231B` (+ `#FF4A36` em hover) | Ajustado a partir da logo fornecida, como o próprio prompt sugeria ("sample the supplied logos"). |
+| **Vinho** | `#65151D` | `#5E0C0F` | Mais escuro, para não competir com o vermelho principal. |
+| **Latão** | — | `#C9A45C` | Acrescentado como acento secundário, inspirado nas ferragens e nos pratos. É usado com muita parcimônia. |
+| **Tipografia** | Display condensada + sans | **Alfa Slab One itálico** nos títulos, **Archivo** (eixo de largura variável) no corpo, **JetBrains Mono** em rótulos técnicos | A slab itálica fica próxima do desenho da logomarca TAMA. A Archivo variável permite ir de condensado a expandido com uma família só. Cada fonte tem fallback de sistema para funcionar offline. |
+| **Página de produtos** | Modal de detalhes e ordenação | Cartões levam direto à página oficial, com filtro por categoria e linha | Com 475 produtos reais, o detalhe confiável está no site oficial. Duplicar especificações aumentaria o risco de erro. |
+| **Fotos de ambiente** | Só fotos fornecidas | Somadas a fotos do Unsplash (licença livre) para palco e clima | As fotos fornecidas não cobriam todas as seções. As do Unsplash são só de ambiente, nunca apresentadas como produto TAMA. |
 
-## Pendências
+### 3.3 Paleta final
 
-Sem carrinho, estoque ou contas. As fotos dos artistas têm baixa resolução (a página as exibe em preto e branco para disfarçar); vale trocá-las por versões maiores.
+| Token | Cor | Uso |
+| --- | --- | --- |
+| `--bg` / `--bg-2` / `--bg-3` | `#070707` / `#0E0E0F` / `#161617` | Fundos e superfícies |
+| `--ink` | `#F4F0E9` | Texto principal |
+| `--mute` | `#9A958D` | Texto secundário |
+| `--red` / `--red-2` | `#E3231B` / `#FF4A36` | CTA, estados ativos, trilho de progresso |
+| `--red-deep` | `#5E0C0F` | Fundos de destaque |
+| `--brass` | `#C9A45C` | Acento pontual |
+
+---
+
+## 4. Como corrigi o caminho com a IA
+
+- **Revisão crítica dos fatos:** a IA escrevia datas e afirmações com segurança mesmo quando as fontes divergiam. Na história, as datas do início das baterias Star e do lançamento do Iron Cobra variam entre as fontes, então o texto usa "poucos anos depois" e "início dos anos 90" em vez de um ano preciso que poderia estar errado.
+- **Preços:** cobrei a regra que eu mesmo tinha escrito no prompt e removi tudo que não tinha fonte.
+- **Funcionamento local:** o site precisava abrir direto do disco (`file://`). Duas coisas quebravam: as máscaras CSS do emblema e a leitura dos `.mp3`. A solução foi usar o emblema como imagem de fundo e embutir os samples em `js/samples.js`, gerado por `python tools/build-samples.py`.
+- **Deploy:** o site carrega os samples de `../samples`, fora da pasta do site. Por isso publiquei a pasta `vibecode` inteira, com um `vercel.json` que redireciona `/` para `/tama-drums-brasil/`.
+
+---
+
+## 5. Referências e fontes (outubro de 2026)
+
+- **Produtos e artistas:** tama.com (lista de artistas de bateria e tama.com/asia/products). Os nomes de produtos foram mantidos como no site oficial.
+- **História:** Wikipédia (Tama Drums, Tama Iron Cobra), Drummerszone, blog da Gear4music.
+- **Artistas em destaque:** Anika Nilles (Thomann, Blabbermouth), Eloy Casagrande (Drumming News Network, BeatIt), Stewart Copeland (Thomann), Clay Aeschliman (Modern Drummer), Matheus Falcão (página Tama Brasil da Musical Express).
+- **Referência visual:** pele de bumbo e logomarca TAMA, catálogos impressos de instrumentos e sites editoriais de marcas premium.
+- **Fotos de ambiente (Unsplash):** Vitalii Khodzinskyi, Junseong Lee, Magnus Lunay, Aliane Schwartzhaupt, Matt Roskovec, Michael Dobrinski, Josh Sorenson e Shawn Sim.
+
+## 6. Limitações
+
+- Site estático: sem carrinho, estoque, contas ou envio de formulário.
+- O contato (e-mail, telefone e horário) é fictício.
